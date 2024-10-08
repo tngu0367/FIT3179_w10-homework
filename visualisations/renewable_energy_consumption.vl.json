@@ -1,0 +1,39 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "description": "Renewable energy consumption in Australia.",
+  "data": {
+    "url": "data/renewable_energy_consumption.csv",
+    "format": {"type": "csv"}
+  },
+  "transform": [
+    {
+      "fold": ["2015-16", "2016-17", "2017-18", "2018-19", "2019-20", "2020-21", "2021-22", "2022-23"],
+      "as": ["year", "value"]
+    }
+  ],
+  "mark": "line",
+  "encoding": {
+    "x": {
+      "field": "year",
+      "type": "ordinal",
+      "title": "Year"
+    },
+    "y": {
+      "field": "value",
+      "type": "quantitative",
+      "title": "Consumption (PJ)"
+    },
+    "color": {
+      "field": "Energy",
+      "type": "nominal",
+      "scale": {
+        "domain": ["Biomass", "wood and other b", "bagasse", "Municipal and industrial waste", "Biogas", "landfill gas", "other biogas", "Biofuels", "ethanol", "biodiesel", "other liquid biofuels", "Wind power", "Hydro power", "Solar PV", "Solar hot water", "Total"],
+        "range": ["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd", "#8c564b", "#e377c2", "#7f7f7f", "#bcbd22", "#17becf", "#f7b733", "#7ed957", "#f75757", "#e9c46a", "#264653", "#e76f51"]
+      }
+    },
+    "tooltip": [
+      {"field": "year", "type": "ordinal", "title": "Year"},
+      {"field": "value", "type": "quantitative", "title": "Value (PJ)"}
+    ]
+  }
+}

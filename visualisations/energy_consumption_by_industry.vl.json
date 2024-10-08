@@ -1,0 +1,53 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "description": "Energy consumption by industry in Australia.",
+  "data": {
+    "url": "data/energy_consumption_by_industry.csv",
+    "format": {"type": "csv"}
+  },
+  "transform": [
+    {
+      "fold": [
+        "2008-09", "2009-10", "2010-11", "2011-12", 
+        "2012-13", "2013-14", "2014-15", "2015-16", 
+        "2016-17", "2017-18", "2018-19", "2019-20", 
+        "2020-21", "2021-22", "2022-23"
+      ],
+      "as": ["year", "value"]
+    }
+  ],
+  "mark": "bar",
+  "encoding": {
+    "x": {
+      "field": "year",
+      "type": "ordinal",
+      "title": "Year"
+    },
+    "y": {
+      "field": "value",
+      "type": "quantitative",
+      "title": "Energy Consumption (PJ)"
+    },
+    "color": {
+      "field": "Classification",
+      "type": "nominal",
+      "scale": {
+        "domain": [
+          "Agriculture", "Mining", "Manufacturing", 
+          "Electricity generation", "Construction", 
+          "Transport", "Gas supply", "Water and waste", 
+          "Commercial and services", "Residential", "Total"
+        ],
+        "range": [
+          "#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", 
+          "#9467bd", "#8c564b", "#e377c2", "#7f7f7f", 
+          "#bcbd22", "#17becf", "#f7b733"
+        ]
+      }
+    },
+    "tooltip": [
+      {"field": "year", "title": "Year"},
+      {"field": "value", "title": "Value (PJ)"}
+    ]
+  }
+}

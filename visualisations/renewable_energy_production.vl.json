@@ -1,0 +1,39 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "description": "Line graph of renewable energy production in Australia.",
+  "data": {
+    "url": "data/renewable_energy_production.csv",
+    "format": {"type": "csv"}
+  },
+  "transform": [
+    {
+      "fold": [
+        "Fuel inputs", "Electricity generated", "Manufacturing", 
+        "Other industry", "Transport", "Residential"
+      ],
+      "as": ["category", "value"]
+    }
+  ],
+  "mark": "line",
+  "encoding": {
+    "x": {
+      "field": "category",
+      "type": "nominal",
+      "title": "Category"
+    },
+    "y": {
+      "field": "value",
+      "type": "quantitative",
+      "title": "Production (PJ)"
+    },
+    
+    "color": {
+      "field": "category",
+      "type": "nominal"
+    },
+    "tooltip": [
+      {"field": "category", "title": "Category"},
+      {"field": "value", "title": "Value (PJ)"}
+    ]
+  }
+}

@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Australian Energy Data Visualisation</title>
+
+  <!-- Import Vega & Vega-Lite -->
+  <script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-lite@5"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
+
+
+  <!-- Pure.css for layout -->
+  <link rel="stylesheet" href="https://unpkg.com/purecss@2.0.3/build/pure-min.css">
+
+  <!-- Custom styles -->
+  <style>
+    body {
+      font-family: 'Oxygen', sans-serif;
+      background-color: #f0f0f0;
+      color: #333;
+      justify-content: center; /* Centers horizontally */
+  align-items: center; /* Centers vertically */
+    }
+    .page {
+      width: 80%;
+      margin: 40px auto;
+      padding: 20px;
+      background-color: white;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+    h1, h2 {
+      text-align: center;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 20px;
+    }
+    h1 {
+      font-size: 2.5em;
+      color: #1f77b4;
+    }
+    h2 {
+      font-size: 1.7em;
+      color: #333;
+      margin-top: 30px;
+      border-bottom: 2px solid #1f77b4;
+      padding-bottom: 10px;
+    }
+    p {
+      font-size: 1.1em;
+      text-align: justify;
+      line-height: 1.6;
+    }
+    .vis-container {
+  width: 1010px; 
+  height: 300px; 
+  margin: auto; 
+  margin-bottom: 20px; 
+  border: 2px solid #ddd; 
+  border-radius: 8px; 
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+  padding: 15px; 
+  background-color: #f9f9f9; 
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+  font-size: 18px; 
+  color: #888; 
+  text-align: center;
+}
+
+.vis-container:empty::before {
+  content: "Visualization will load here...";
+  color: #888;
+  font-style: italic;
+}
+
+
+    #industry-consumption {
+    width: 100%; 
+    max-width: 1010px; 
+    height: 400px; 
+    border: 2px solid white; 
+    border-radius: 8px; 
+    background-color: white; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    }
+    #renewable-consumption{
+    width: 100%; 
+    max-width: 1010px; 
+    margin: 0 auto; 
+    height: 400px; 
+    border: 2px solid white; 
+    border-radius: 8px; 
+    background-color: white; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    }
+
+
+  </style>
+</head>
+<body>
+
+<div class="page">
+  <!-- Title and Description -->
+  <h1>Australian Energy Data Overview</h1>
+
+  <!-- Energy Consumption by Industry Bar Chart -->
+    <h2>Energy Consumption by Industry</h2>
+    <p>This bar chart presents energy consumption across different industries from 2008 to 2023. Compare how various sectors like agriculture, manufacturing, and transport have utilized energy over the years.</p>
+    <div id="industry-consumption"></div>
+
+    <!-- Renewable Energy Consumption Line Chart -->
+    <h2>Renewable Energy Consumption</h2>
+    <p>This line chart showcases renewable energy consumption across Australia from 2015 to 2023. Track the growth of various energy sources like solar, wind, biomass, and hydropower over time.</p>
+    <div id="renewable-consumption"></div>
+
+</div>
+
+<script>
+  
+  // Energy Consumption by Industry Visualization
+  var industryConsumptionSpec = {
+    "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+    "data": {
+      "url": "data/energy_consumption_by_industry.csv",
+      "format": {"type": "csv"}
+    },
+    "transform": [
+      {
+        "fold": ["2008-09", "2009-10", "2010-11", "2011-12", "2012-13", "2013-14", "2014-15", "2015-16", "2016-17", "2017-18", "2018-19", "2019-20", "2020-21", "2021-22", "2022-23"],
+        "as": ["year", "value"]
+      }
+    ],
+    "mark": "bar",
+    "encoding": {
+      "x": {
+        "field": "year",
+        "type": "ordinal",
+        "title": "Year"
+      },
+      "y": {
+        "field": "value",
+        "type": "quantitative",
+        "title": "Energy Consumption (PJ)"
+      },
+      "color": {
+        "field": "Classification",
+        "type": "nominal",
+        "scale": {
+          "domain": ["Agriculture", "Mining", "Manufacturing", "Electricity generation", "Construction", "Transport", "Gas supply", "Water and waste", "Commercial and services", "Residential", "Total"],
+          "range": ["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd", "#8c564b", "#e377c2", "#7f7f7f", "#bcbd22", "#17becf", "#f7b733"]
+        }
+      },
+      "tooltip": [
+        {"field": "year", "title": "Year"},
+        {"field": "value", "title": "Value (PJ)"}
+      ]
+    }
+  };
+
+  vegaEmbed('#industry-consumption', industryConsumptionSpec, { "actions": false }).catch(console.error);
+
+  // Renewable Energy Consumption Visualization
+var renewableConsumptionSpec = {
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "data": {
+    "url": "data/renewable_energy_consumption.csv",
+    "format": {"type": "csv"}
+  },
+  "transform": [
+    {
+      "fold": ["2015-16", "2016-17", "2017-18", "2018-19", "2019-20", "2020-21", "2021-22", "2022-23"],
+      "as": ["year", "value"]
+    }
+  ],
+  "mark": "line",
+  "encoding": {
+    "x": {
+      "field": "year",
+      "type": "ordinal",
+      "title": "Year"
+    },
+    "y": {
+      "field": "value",
+      "type": "quantitative",
+      "title": "Consumption (PJ)"
+    },
+    "color": {
+      "field": "Energy",
+      "type": "nominal",
+      "scale": {
+        "domain": ["Biomass", "wood and other b", "bagasse", "Municipal and industrial waste", "Biogas", "landfill gas", "other biogas", "Biofuels", "ethanol", "biodiesel", "other liquid biofuels", "Wind power", "Hydro power", "Solar PV", "Solar hot water", "Total"],
+        "range": ["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd", "#8c564b", "#e377c2", "#7f7f7f", "#bcbd22", "#17becf", "#f7b733", "#7ed957", "#f75757", "#e9c46a", "#264653", "#e76f51"]
+      }
+    },
+    "tooltip": [
+      {"field": "year", "type": "ordinal", "title": "Year"},
+      {"field": "value", "type": "quantitative", "title": "Value (PJ)"}
+    ]
+  }
+};
+
+vegaEmbed('#renewable-consumption', renewableConsumptionSpec, { "actions": false }).catch(console.error);
+
+</script>
+
+
+</body>
+</html>
